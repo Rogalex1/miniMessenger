@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #ffffff;              /* fond principal */
+  --surface: #f9fafb;         /* fond secondaire (panneaux, bulles reçues) */
+  --border: #e5e7eb;          /* bordures fines */
+  --text: #1f2937;            /* texte principal */
+  --text-muted: #6b7280;      /* texte secondaire */
+  --primary: #f97316;         /* orange principal (boutons, bulles envoyées) */
+  --primary-hover: #ea580c;   /* orange au survol */
+  --primary-soft: #fff7ed;    /* orange très clair (élément sélectionné) */
+  --primary-text: #c2410c;    /* orange pour du texte sur fond blanc */
+  --danger: #dc2626;          /* erreurs */
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom scrollbar for chat messages */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
