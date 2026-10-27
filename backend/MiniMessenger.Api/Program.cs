@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using MongoDB.Driver;
 using Microsoft.IdentityModel.Tokens;
 using MiniMessenger.Api.Data;
 using MiniMessenger.Api.Services;
@@ -53,6 +54,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 // ===== 2. BUILD =====
+
+
+// Configuration de MongoDB
+builder.Services.AddSingleton<IMongoClient>(sp =>
+    new MongoClient(builder.Configuration.GetValue<string>("MongoSettings:ConnectionString")));
+
+builder.Services.AddScoped<IMongoDatabase>(sp =>
+{
+    var client = sp.GetRequiredService<IMongoClient>();
+    var dbName = builder.Configuration.GetValue<string>("MongoSettings:DatabaseName");
+    return client.GetDatabase(dbName);
+});
 
 var app = builder.Build();
 

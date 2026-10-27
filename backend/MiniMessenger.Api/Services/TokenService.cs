@@ -11,7 +11,7 @@ public class TokenService : ITokenService
 {
     private readonly IConfiguration _config;
 
-    public TokenService(IConfiguration config)
+    publicTokenService(IConfiguration config)
     {
         _config = config;
     }
@@ -20,7 +20,8 @@ public class TokenService : ITokenService
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            // user.Id est déjà un string (ObjectId de MongoDB), plus besoin de .ToString()
+            new Claim(ClaimTypes.NameIdentifier, user.Id),
             new Claim(ClaimTypes.Name, user.Username)
         };
 

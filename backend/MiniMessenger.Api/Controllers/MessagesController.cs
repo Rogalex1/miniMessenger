@@ -18,8 +18,8 @@ public class MessagesController : ControllerBase
         _messageService = messageService;
     }
 
-    [HttpGet("{userId:int}")]
-    public async Task<ActionResult<List<MessageDto>>> GetConversation(int userId)
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<List<MessageDto>>> GetConversation(string userId)
     {
         var messages = await _messageService.GetConversationAsync(User.GetUserId(), userId);
         return Ok(messages);
