@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { login } from '@/lib/auth.api';
 import { useAuthStore } from '@/lib/authStore';
@@ -9,7 +8,6 @@ import { getApiErrorMessage } from '@/lib/utils';
 import { AlertCircleIcon, MessageSquareIcon, SpinnerIcon } from '@/components/common/Icons';
 
 export default function LoginPage() {
-  const router = useRouter();
   const { user, ready, init, setAuth } = useAuthStore();
 
   const [username, setUsername] = useState('');
@@ -17,7 +15,7 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Initialisation de la session
+  // Initialisation de la session au montage
   useEffect(() => {
     init();
   }, [init]);
@@ -25,9 +23,9 @@ export default function LoginPage() {
   // Si l'utilisateur est déjà connecté, redirection vers /chat
   useEffect(() => {
     if (ready && user) {
-      router.replace('/chat');
+      window.location.href = '/chat';
     }
-  }, [ready, user, router]);
+  }, [ready, user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,7 +33,7 @@ export default function LoginPage() {
 
     const trimmedUsername = username.trim();
     if (!trimmedUsername || !password) {
-      setErrorMessage('Veuillez renseigner votre nom d\'utilisateur et votre mot de passe.');
+      setErrorMessage("Veuillez renseigner votre nom d'utilisateur et votre mot de passe.");
       return;
     }
 
@@ -46,9 +44,9 @@ export default function LoginPage() {
         password: password,
       });
 
-      // Succès : mise à jour de la session et redirection
+      // Succès : mise à jour de la session puis redirection directe vers /chat
       setAuth(response.data);
-      router.push('/chat');
+      window.location.href = '/chat';
     } catch (err) {
       const msg = getApiErrorMessage(err, 'Identifiants invalides.');
       setErrorMessage(msg);
@@ -56,11 +54,12 @@ export default function LoginPage() {
     }
   };
 
-  // Tant que l'état auth n'a pas été lu du localStorage, on évite un clignotement
-  if (!ready || user) {
+  // Si déjà connecté et en cours de redirection vers le chat
+  if (ready && user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#ffffff]">
-        <SpinnerIcon className="w-6 h-6 animate-spin text-[#f97316]" />
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#ffffff]">
+        <SpinnerIcon className="w-8 h-8 animate-spin text-[#f97316]" />
+        <p className="mt-3 text-sm text-[#6b7280]">Redirection vers le chat...</p>
       </div>
     );
   }

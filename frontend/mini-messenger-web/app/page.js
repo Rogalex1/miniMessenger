@@ -1,12 +1,10 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/authStore';
 import { SpinnerIcon } from '@/components/common/Icons';
 
 export default function HomePage() {
-  const router = useRouter();
   const { user, ready, init } = useAuthStore();
 
   useEffect(() => {
@@ -17,11 +15,25 @@ export default function HomePage() {
     if (!ready) return;
 
     if (user) {
-      router.replace('/chat');
+      window.location.href = '/chat';
     } else {
-      router.replace('/login');
+      window.location.href = '/login';
     }
-  }, [ready, user, router]);
+  }, [ready, user]);
+
+  // Sécurité : redirection de secours vers /login si le ready tarde
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      if (token) {
+        window.location.href = '/chat';
+      } else {
+        window.location.href = '/login';
+      }
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-[#ffffff]">

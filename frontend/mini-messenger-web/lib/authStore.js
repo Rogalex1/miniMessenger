@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-export const useAuthStore = create((set) => ({
+export const useAuthStore = create((set, get) => ({
   user: null,
   token: null,
   ready: false,
@@ -28,12 +28,17 @@ export const useAuthStore = create((set) => ({
 
   /**
    * Enregistre la session après login ou register
-   * @param {{ userId: number, username: string, token: string }} data
+   * Supporte userId ou id
    */
-  setAuth: ({ userId, username, token }) => {
+  setAuth: (data) => {
+    if (!data) return;
+    const userId = data.userId ?? data.id;
+    const username = data.username;
+    const token = data.token;
     const userData = { userId, username };
+
     if (typeof window !== 'undefined') {
-      localStorage.setItem('token', token);
+      if (token) localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
     }
     set({ user: userData, token, ready: true });
@@ -46,6 +51,7 @@ export const useAuthStore = create((set) => ({
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      window.location.href = '/login';
     }
     set({ user: null, token: null, ready: true });
   },

@@ -23,6 +23,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IContactService, ContactService>();
 
 builder.Services.AddCors(options =>
 {

@@ -4,11 +4,11 @@ import { useState } from 'react';
 import { useAuthStore } from '@/lib/authStore';
 import { useChatStore } from '@/lib/chatStore';
 import { getInitials } from '@/lib/utils';
-import { LogOutIcon, SearchIcon, SpinnerIcon, UserIcon } from '@/components/common/Icons';
+import { AlertCircleIcon, LogOutIcon, SearchIcon, SpinnerIcon, UserIcon } from '@/components/common/Icons';
 
 export default function ConversationList({ onSelectUser }) {
   const { user, logout } = useAuthStore();
-  const { users, selectedUser, selectUser, isLoadingUsers } = useChatStore();
+  const { users, selectedUser, selectUser, isLoadingUsers, error, fetchUsers } = useChatStore();
   const [searchTerm, setSearchTerm] = useState('');
 
   const filteredUsers = users.filter((u) =>
@@ -63,10 +63,21 @@ export default function ConversationList({ onSelectUser }) {
 
       {/* Liste des contacts */}
       <div className="flex-1 overflow-y-auto divide-y divide-[#f3f4f6]">
-        {isLoadingUsers ? (
+        {isLoadingUsers && users.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-[#9ca3af] space-y-2">
             <SpinnerIcon className="w-6 h-6 animate-spin text-[#f97316]" />
             <p className="text-sm">Chargement des contacts...</p>
+          </div>
+        ) : error && users.length === 0 ? (
+          <div className="py-8 px-4 text-center text-[#dc2626] space-y-2">
+            <AlertCircleIcon className="w-6 h-6 mx-auto text-[#dc2626]" />
+            <p className="text-xs font-medium">{error}</p>
+            <button
+              onClick={() => fetchUsers()}
+              className="mt-2 px-3 py-1.5 text-xs bg-[#f97316] hover:bg-[#ea580c] text-white font-medium rounded-lg transition-colors cursor-pointer"
+            >
+              Réessayer
+            </button>
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="py-12 px-4 text-center text-[#9ca3af]">

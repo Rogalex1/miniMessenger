@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/authStore';
 import { useChatStore } from '@/lib/chatStore';
 import ConversationList from '@/components/chat/ConversationList';
@@ -11,7 +10,6 @@ import { getInitials } from '@/lib/utils';
 import { ArrowLeftIcon, MessageSquareIcon, SpinnerIcon } from '@/components/common/Icons';
 
 export default function ChatPage() {
-  const router = useRouter();
   const { user, ready, init } = useAuthStore();
   const {
     selectedUser,
@@ -22,23 +20,33 @@ export default function ChatPage() {
     fetchUsers,
     fetchMessages,
     sendMessage,
-    selectUser,
   } = useChatStore();
 
   // Contrôle de l'affichage sur mobile (soit liste, soit conversation)
   const [showConversationOnMobile, setShowConversationOnMobile] = useState(false);
 
-  // 1. Initialisation de la session
+  // 1. Initialisation de la session au montage
   useEffect(() => {
     init();
   }, [init]);
 
-  // 2. Protection de la route
+  // 2. Protection de la route : redirection vers /login si non connecté
   useEffect(() => {
     if (ready && !user) {
-      router.replace('/login');
+      window.location.href = '/login';
     }
-  }, [ready, user, router]);
+  }, [ready, user]);
+
+  // Sécurité supplémentaire : si après 1s aucun jeton n'est présent dans localStorage
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+      if (!token) {
+        window.location.href = '/login';
+      }
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   // 3. Chargement de la liste des contacts au montage
   useEffect(() => {
@@ -60,7 +68,7 @@ export default function ChatPage() {
     };
   }, [selectedUser?.id, fetchMessages]);
 
-  const handleSelectContact = (u) => {
+  const handleSelectContact = () => {
     setShowConversationOnMobile(true);
   };
 
