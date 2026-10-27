@@ -1,0 +1,7 @@
+prenom;nom;telephone;email
+Awa;Dossou;+33612345678;awa@example.com
+Koffi;Agbo;;koffi@example.com
+Marie;Zinsou;abc123;
+;Test;+33612345679;
+Awa;Dossou;+33612345678;awa@example.com
+Paul;Houngbo;;email-invalide
